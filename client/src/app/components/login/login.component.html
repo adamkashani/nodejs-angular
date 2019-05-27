@@ -1,0 +1,58 @@
+<p>
+  login works!
+</p>
+
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Login</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="example-form">
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="example-full-width">
+            <input matInput placeholder="Username" [(ngModel)]="userName" name="userName" required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+        <td><mat-form-field class="example-full-width">
+          <input matInput placeholder="Password" [(ngModel)]="password"type="password" name="password" required>
+        </mat-form-field></td>
+      </tr></table>
+    </form>
+    <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="login()" color="primary" >Login</button>
+  </mat-card-actions>
+</mat-card>
+
+<!-- <body>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-lg-8 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Sign In</h5>
+            <form class="form-signin">
+              <div class="form-label-group">
+                <input type="text" #userName id="user-name" class="form-control" placeholder="user name" required autofocus>
+                <label for="user-name">user name</label>
+              </div>
+
+              <div class="form-label-group">
+                <input type="password" #password id="inputPassword" class="form-control" placeholder="Password" required>
+                <label for="inputPassword">Password</label>
+              </div>
+
+             
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" (click)="login(userName.value , password.value)">Sign in</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body> -->
