@@ -31,8 +31,8 @@ export class LoginComponent implements OnInit {
         alert(JSON.stringify(next))
         this.clientService.token = JSON.stringify(next);
         console.log(this.clientService.token)
-        // get the token from request ang nav to gome page 
-        // next.
+        // get the token from request ang nav to home page 
+        this.clientService.sender = this.userName;
         this.router.navigate(["/home"]);
       },
       (error) => {

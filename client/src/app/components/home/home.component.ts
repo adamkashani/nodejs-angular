@@ -16,9 +16,9 @@ export class HomeComponent implements OnInit {
   }
 
   //to chinge the chet text 
-  chetClient(clientName: string) {
-    let serverMessages = this.clientService.mapChet.get(clientName)
-    this.clientService.serverMessages = serverMessages;
-  }
+  // chetClient(clientName: string) {
+  //   let serverMessages = this.clientService.mapChet.get(clientName)
+  //   this.clientService.serverMessages = serverMessages;
+  // }
 
 }

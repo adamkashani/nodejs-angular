@@ -19,6 +19,9 @@ export class ChetComponent implements AfterViewInit {
 
 
     constructor(public clientService: ClientService) {
+        //test view 
+        // this.clientService.serverMessages.push("nananana");
+        
 
     }
 
@@ -31,7 +34,7 @@ export class ChetComponent implements AfterViewInit {
     }
 
     public send(name: string): void {
-        const message = new Message(this.sender, this.clientMessage, this.isBroadcast, name);
+        const message = new Message(this.clientService.sender, this.clientMessage, this.isBroadcast, name);
         this.serverMessages.push(message);
         this.clientService.socket$.next(message);
         this.clientMessage = '';

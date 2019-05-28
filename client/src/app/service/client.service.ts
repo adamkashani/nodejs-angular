@@ -15,7 +15,11 @@ export class ClientService {
 
   serverMessages: Array<Message> = [];
 
+  listOfUsers: Array<string> = [];
+
   token: string;
+
+  public sender = '';
 
   public socket$: WebSocketSubject<Message>;
 
@@ -30,6 +34,9 @@ export class ClientService {
     this.socket$
       .subscribe(
         (message) => {
+          //for test
+          this.serverMessages.push(message);
+          
           // read ho send the message
           let chetList = this.mapChet.get(message.sender);
           if (chetList) {
