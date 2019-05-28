@@ -8,14 +8,15 @@ import * as jwt from "jsonwebtoken";
 import { error } from 'util';
 import * as bodyParser from "body-parser"; // pull information from HTML POST (express4)
 import * as cookieParser from "cookie-parser";
-import { SSL_OP_NO_COMPRESSION } from 'constants';
-
-interface UserName {
-    userName: string;
-}
+import { SSL_OP_NO_COMPRESSION } from 'constants'
+// import * as socketio from "socket.io";
 
 // create redis client
 const redisClient = redis.createClient();
+const redisPub = redis.createClient();
+const redisSub = redis.createClient();
+
+
 const app = express();
 
 //initialize a simple http server
@@ -34,9 +35,6 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-
-
-
 //initialize the WebSocket server instance
 const wss = new WebSocket.Server({ server });
 // the client map string the client name or token 
@@ -45,7 +43,6 @@ const CLIENTS: Map<string, WebSocket> = new Map();
 const clientToken: Map<string, string> = new Map();
 
 let number: number = 0;
-
 
 interface ExtWebSocket extends WebSocket {
     isAlive: boolean;
@@ -57,12 +54,15 @@ function createMessage(content: string, isBroadcast = false, sender = 'NS', clie
 
 
 wss.on('connection', (ws: WebSocket, request: http.IncomingMessage) => {
+    console.log('ws.url : ' + ws.url);
+    ws.url
     console.log('full path' + wss.path);
-    console.log('path start with token' + wss.path.startsWith('token'));
+    // console.log('path start with token' + wss.path.startsWith('token'));
     console.log(request.rawHeaders);
-    let num = wss.path.indexOf('token=')
-    let str = wss.path.slice(num);
-    console.log(`the token : ${str}`)
+    // let num = wss.path.indexOf('token=')
+    // let str = wss.path.slice(num);
+    // console.log(`the token : ${str}`)
+
     // console.log(request.cookies.token);
     // CLIENTS.set('almog' + number, ws);
     // number++;
@@ -128,6 +128,34 @@ setInterval(() => {
 server.listen(process.env.PORT || 8999, () => {
     console.log(`Server started on port webSockey ${server.address().port} :)`);
 });
+
+
+//redis sub 
+redisSub.on("message", (channel, data) => {
+    console.log(channel + 'the data : ' + data);
+
+    if (channel === 'add-user') {
+        console.log(`from channel add-user : ${data}`)
+        // wss.emit()
+    } else if (channel === 'message') {
+        const message = JSON.parse(data) as Message;
+        console.log(`from channel add=user : ${data}`)
+    }
+
+})
+redisSub.subscribe("add-user");
+redisSub.subscribe("message");
+
+redisSub.on("subscribe", function (channel, count) {
+    console.log("Subscribed to " + channel + ". Now subscribed to " + count + " channel(s).");
+});
+
+//redis pub
+setInterval(function () {
+    let no = Math.floor(Math.random() * 100);
+    redisPub.publish('add-user', `Generated Chat random no ${no}` );
+}, 5000);
+
 
 // create api for login 
 app.post('/login', (request, response) => {
