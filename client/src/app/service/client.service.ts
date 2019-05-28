@@ -24,28 +24,35 @@ export class ClientService {
   public socket$: WebSocketSubject<Message>;
 
   constructor(private httpClient: HttpClient) {
-
-    // this.onLogin();
+    this.token = sessionStorage.getItem('token')
+    //this.onLogin();
 
   }
 
   onLogin() {
-    this.socket$ = new WebSocketSubject(`ws://localhost:8999?token=${this.token}`);
+    this.socket$ = new WebSocketSubject(`ws://localhost:1001?token=${this.token}`);
     this.socket$
       .subscribe(
         (message) => {
-          //for test
-          this.serverMessages.push(message);
-          
-          // read ho send the message
-          let chetList = this.mapChet.get(message.sender);
-          if (chetList) {
+          //when the new client connctiont to the websocket
+          if (message.isBroadcast) {
+            this.listOfUsers.push(message.sender)
+            // read ho send the message
+            let chetList = this.mapChet.get(message.sender);
+            if (chetList) {
+              //אולי נשמור פה רק את תוכן ההודעה שנישלחה
+              chetList.push(message)
+            } else {
+              let chetList = new Array<Message>();
+              chetList.push(message)
+              this.mapChet.set(message.sender, chetList);
+            }
+          } else {
+            this.serverMessages.push(message);
+            // read ho send the message
+            let chetList = this.mapChet.get(message.sender);
             //אולי נשמור פה רק את תוכן ההודעה שנישלחה
             chetList.push(message)
-          } else {
-            let chetList = new Array<Message>();
-            chetList.push(message)
-            this.mapChet.set(message.sender, chetList);
           }
         },
         (err) => console.error(err),
@@ -57,7 +64,7 @@ export class ClientService {
     console.log(userName)
     // let headers = new HttpHeaders();
     // headers = headers.set('Content-Type', 'application/json');
-    return this.httpClient.post(this.urlLogin, { 'name': userName } ,{ responseType: 'text'} );
+    return this.httpClient.post(this.urlLogin, { 'name': userName }, { responseType: 'text' });
   }
 
   getUserName(): string {

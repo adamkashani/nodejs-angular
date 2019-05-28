@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
   }
   login(): void {
     //check the value and send reqeust to api login 
-    if (this.userName.length < 3) {
+    if (this.userName.length < 1) {
       alert("Invalid user name");
       return;
     }
@@ -28,9 +28,10 @@ export class LoginComponent implements OnInit {
 
     this.clientService.login(this.userName).subscribe(
       (next) => {
-        alert(JSON.stringify(next))
+        // alert(JSON.stringify(next))
         this.clientService.token = JSON.stringify(next);
-        console.log(this.clientService.token)
+        sessionStorage.setItem('token' , this.clientService.token)
+        // console.log(this.clientService.token)
         // get the token from request ang nav to home page 
         this.clientService.sender = this.userName;
         this.router.navigate(["/home"]);

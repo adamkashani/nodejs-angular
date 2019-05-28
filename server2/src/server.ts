@@ -48,8 +48,21 @@ function createMessage(content: string, isBroadcast = false, sender = 'NS', clie
     return JSON.stringify(new Message(content, isBroadcast, sender, clientName));
 }
 
-
 wss.on('connection', (ws: WebSocket, request: http.IncomingMessage) => {
+    console.log('ws.url : ' + ws.url);
+    ws.url
+    console.log('full path' + wss.path);
+    // console.log('path start with token' + wss.path.startsWith('token'));
+    console.log(request.rawHeaders);
+    // let num = wss.path.indexOf('token=')
+    // let str = wss.path.slice(num);
+    // console.log(`the token : ${str}`)
+
+    // console.log(request.cookies.token);
+    // CLIENTS.set('almog' + number, ws);
+    // number++;
+    console.log('ws.eventNames : ' + ws.eventNames());
+    console.log('CLIENTS.keys map : ' + CLIENTS.keys.toString());
 
     const extWs = ws as ExtWebSocket;
 
@@ -63,48 +76,23 @@ wss.on('connection', (ws: WebSocket, request: http.IncomingMessage) => {
     ws.on('message', (msg: string) => {
         // from string to obj message
         const message = JSON.parse(msg) as Message;
-        let webSocket = CLIENTS.get(message.sender)
-        if (webSocket) {
-            webSocket.send(message)
-        } else {
-            redisPub.publish('message', JSON.stringify(message))
-        }
-
-        // console.log("request url on message",request.url)
-        // setTimeout(() => {
-        //     if (message.isBroadcast) {
-        //         //send back the message to the other clients
-        //         wss.clients
-        //             .forEach(client => {
-        //                 if (client != ws) {
-        //                     // console.log(client)
-        //                     client.send(createMessage(message.content, true, message.sender, message.token));
-        //                     // client.send(createMessage(JSON.stringify(client), true, message.sender));
-        //                 }
-        //             });
-        //     }
-        ws.send(createMessage(`You sent -> ${message.content}`, message.isBroadcast));
-        // if the message not send to client in sec braek
+        setTimeout(() => {
+            if (message.isBroadcast) {
+                //send back the message to the other clients
+                wss.clients
+                    .forEach(client => {
+                        if (client != ws) {
+                            console.log(client)
+                            // replayse my name from token to the name client 
+                            client.send(createMessage(message.content, true, message.sender, message.myName));
+                            // client.send(createMessage(JSON.stringify(client), true, message.sender));
+                        }
+                    });
+            }
+            ws.send(createMessage(`You sent -> ${message.content}`, message.isBroadcast));
+            // if the message not send to client in sec braek
+        }, 1000);
     });
-
-    //get the token from url 
-    let url = request.url as string;
-    let str = url.substring(8, url.length);
-    console.log(`token : ${str}`)
-    //get the client name conncted from redis 
-
-    redisClient.GET(str, (err, reply) => {
-        let senderName = reply
-        console.log(reply)
-        CLIENTS.set(senderName, ws)
-        // send for client the user name connctions
-        wss.clients.forEach(element => {
-            element.send(createMessage(`user name connect : ${senderName}`, true, senderName, ''))
-        })
-        redisPub.publish('add-user', senderName)
-    })
-
-
 
     //send immediatly a feedback to the incoming connection    
     ws.send(createMessage('Hi there, I am a WebSocket server'), (error) => {
@@ -133,7 +121,7 @@ setInterval(() => {
 }, 10000);
 
 //start our server
-server.listen(process.env.PORT || 1001, () => {
+server.listen(process.env.PORT || 1002, () => {
     console.log(`Server started on port webSockey ${server.address().port} :)`);
 });
 
@@ -160,9 +148,22 @@ redisSub.on("subscribe", function (channel, count) {
 
 // create api for login 
 app.post('/login', (request, response) => {
+
+    // let cookieToken = request.cookies.token;
+
+    // if (cookieToken = ! null) {
+    //     response.sendStatus(403);
+    //     response.send("the client alredy loggin ")
+    // }
+
+
+    console.log(request.body)
     let name: string = request.body.name;
+    console.log(request.cookies);
+    console.log(name);
     let result: boolean;
     redisClient.lrange('users', 0, -1, function (err, reply) {
+        console.log("error", err)
         console.log("users redis : ", reply);
         // return list from redis
         reply.forEach(element => {
@@ -176,7 +177,7 @@ app.post('/login', (request, response) => {
             let token = jwt.sign({ username: name }, 'shhhhh');
             //insert the token key and value the user name
             redisClient.set(token, name);
-            response.cookie('token', token);
+            // response.cookie('token', token);
             response.send(token)
             console.log(response)
             return;
@@ -190,6 +191,16 @@ app.post('/login', (request, response) => {
     });
 })
 
-app.listen(8080, () => {
-    console.log(`Server started on port 8080 rest api`)
+app.get('/test', (req, res) => {
+    let token = req.cookies.token;
+    console.log(`the token value ${token}`)
+    redisClient.GET(token, (error, replt) => {
+        console.log(replt)
+        console.log(error)
+    })
+
+})
+
+app.listen(8081, () => {
+    console.log(`Server started on port 8081 rest api`)
 })

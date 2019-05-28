@@ -1,8 +1,9 @@
 export class Message {
     constructor(
-        public sender: string,
         public content: string,
-        public isBroadcast = false,
-        public receiver:string,
+        public isBroadcast: boolean,
+        public token: string,
+        public sender: string
     ) { }
 }
+

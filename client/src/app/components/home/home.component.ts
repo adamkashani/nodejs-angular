@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   constructor(public clientService: ClientService) { }
 
   ngOnInit() {
-    this.clientService.onLogin();
+     this.clientService.onLogin();
   }
 
   //to chinge the chet text 
