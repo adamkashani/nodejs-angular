@@ -32,7 +32,7 @@ export class ChetComponent implements AfterViewInit {
     public send(name: string): void {
         this.clientService.isBroadcast = false;
         console.log('this.clientService.clientName', this.clientService.clientName)
-        const message = new Message(this.clientService.sender, this.clientMessage, this.clientService.isBroadcast, this.clientService.clientName);
+        const message = new Message(this.clientService.sender, this.clientService.sender + ' : ' + this.clientMessage, this.clientService.isBroadcast, this.clientService.clientName);
         this.clientService.addMyMessage(this.clientMessage)
         this.serverMessages.push(message);
         this.clientService.socket$.next(message);
@@ -47,7 +47,6 @@ export class ChetComponent implements AfterViewInit {
     public getSenderInitials(sender: string): string {
         return sender && sender.substring(0, 2).toLocaleUpperCase();
     }
-
     public getSenderColor(sender: string): string {
         if (!sender) {
             sender = '';

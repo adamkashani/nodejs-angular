@@ -184,7 +184,6 @@ redisSub.on("message", (channel, data) => {
         //if the client not exists hare push for all client the client connctions 
         if (!senderSocket) {
             console.log(`from channel add-user : ${data}`)
-            console.log(`from channel add-user wss.clients :`, wss.clients)
             wss.clients.forEach(element => {
                 if (element !== senderSocket) {
                     element.send(JSON.stringify(message));

@@ -3,17 +3,11 @@ import { Message } from '../models/message';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WebSocketSubject } from 'rxjs/observable/dom/WebSocketSubject';
 import { Observable } from 'rxjs';
-import { CanActivate } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
 export class ClientService implements CanActivate {
-
-
-  // TODO שיהיה אםפשר להפעיל רק כאשר ישלך תוקן קיים
-  canActivate(route: import("@angular/router").ActivatedRouteSnapshot, state: import("@angular/router").RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
-    throw new Error("Method not implemented.");
-  }
 
   // to send the mesaage
   clientName: string;
@@ -34,7 +28,7 @@ export class ClientService implements CanActivate {
 
   public socket$: WebSocketSubject<Message>;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient ,public router: Router) {
 
     this.token = sessionStorage.getItem('token')
     this.sender = sessionStorage.getItem('userName')
@@ -44,11 +38,15 @@ export class ClientService implements CanActivate {
         this.isBroadcast = false;
       }
     }
+  }
 
-
-    // this.listOfUsers.push('almog')
-    // this.listOfUsers.push('adam')
-    // this.listOfUsers.push('israel')
+  canActivate(route: import("@angular/router").ActivatedRouteSnapshot, state: import("@angular/router").RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
+    if (this.token) {
+      return true;
+    } else {
+      this.router.navigate(['/'])
+      return false;
+    }
   }
 
   onLogin() {

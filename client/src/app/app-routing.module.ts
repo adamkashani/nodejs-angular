@@ -3,13 +3,16 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { ChetComponent } from './components/chet/chet.component';
 import { HomeComponent } from './components/home/home.component';
+import { ClientService } from './service/client.service';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', component: LoginComponent },
-  { path: 'home', component: HomeComponent , children : [
-    { path: 'chet', component: ChetComponent },
-  ] }
+  {
+    path: 'home', canActivate: [ClientService], component: HomeComponent, children: [
+      { path: 'chet', component: ChetComponent },
+    ]
+  }
 
 ];
 
