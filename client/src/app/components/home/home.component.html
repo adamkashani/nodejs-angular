@@ -1,14 +1,15 @@
-<p>
-  home works!
-</p>
-
-<nav>
-  list off users
-  <ul *ngFor="let user of clientService.listOfUsers ; let i = index">
-    <li (click)="changeChatClient(user)">
-      <a><b>i. </b>{{user}}</a>
-    </li>
-  </ul>
-</nav>
-
-<app-chet class="overflow-auto"> </app-chet>
+<main>
+  <nav class="navigation">
+    <h3 class="text-center"><b> Chat List</b></h3>
+    <hr>
+    <ul *ngFor="let user of clientService.listOfUsers ; let i = index">
+      <li>
+        <a><b>i.{{user}}</b></a>
+        <button (click)="changeChatClient(user)"><b> Open</b></button>
+      </li>
+    </ul>
+  </nav>
+  <div class="router-content">
+    <app-chet> </app-chet>
+  </div>
+</main>

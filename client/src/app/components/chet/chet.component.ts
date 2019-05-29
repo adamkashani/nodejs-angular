@@ -9,13 +9,13 @@ import { ClientService } from 'src/app/service/client.service';
 })
 export class ChetComponent implements AfterViewInit {
 
-    @ViewChild('viewer') private viewer: ElementRef;
-
+    @ViewChild('viewer', { static: false }) private viewer: ElementRef;
     public serverMessages = new Array<Message>();
 
     public clientMessage = '';
     public isBroadcast = false;
     public sender = '';
+    public myMsg: boolean = false;
 
 
     constructor(public clientService: ClientService) {
@@ -30,11 +30,13 @@ export class ChetComponent implements AfterViewInit {
     }
 
     public send(name: string): void {
+        this.myMsg = true;
         this.clientService.isBroadcast = false;
         console.log('this.clientService.clientName', this.clientService.clientName)
         const message = new Message(this.clientService.sender, this.clientService.sender + ' : ' + this.clientMessage, this.clientService.isBroadcast, this.clientService.clientName);
         this.clientService.addMyMessage(this.clientMessage)
         this.serverMessages.push(message);
+        console.log(message)
         this.clientService.socket$.next(message);
         this.clientMessage = '';
         this.scroll();

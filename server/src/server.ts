@@ -87,6 +87,8 @@ wss.on('connection', (ws: WebSocket, request: http.IncomingMessage) => {
             redisPub.publish('message', JSON.stringify(message))
         }
         ws.send(createMessage(`You sent -> ${message.content}`, message.isBroadcast));
+
+        return;
         // if the message not send to client in sec braek
     });
 
@@ -120,11 +122,6 @@ wss.on('connection', (ws: WebSocket, request: http.IncomingMessage) => {
         redisPub.publish('add-user', JSON.stringify(message))
     })
 
-    //send immediatly a feedback to the incoming connection    
-    // ws.send(createMessage('Hi there, I am a WebSocket server'), (error) => {
-    //     console.log(error)
-    // });
-
     //send list of client to the new user 
     CLIENTS.forEach((value, key) => {
         ws.send(createMessage('', true, key, ''), (error) => {
@@ -137,6 +134,7 @@ wss.on('connection', (ws: WebSocket, request: http.IncomingMessage) => {
         CLIENTS.forEach((value, key) => {
             if (value === ws) {
                 CLIENTS.delete(key);
+                console.log(`remove webSocket client name  ${value}`)
 
                 // TODO צריך לידאוג כאן לישלוח הודעה ללקוחות ולימחוק את אותו יוזר שהיתנתק ישלנו כבר את השם שלו שזה בעצם המפתח במתודה 
 
