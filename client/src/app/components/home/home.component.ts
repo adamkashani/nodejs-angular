@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ClientService } from 'src/app/service/client.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
@@ -7,21 +7,25 @@ import { MatSidenavModule } from '@angular/material/sidenav';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
 
   constructor(public clientService: ClientService) { }
 
   ngOnInit() {
-     this.clientService.onLogin();
-     this.clientService.listOfUsers
-     this.clientService.isBroadcast = false;
+    this.clientService.onLogin();
   }
+  ngAfterViewInit(): void {
+    // this.clientService.isBroadcast = false;
+  }
+
+
 
   // to change the chaet text 
   changeChatClient(clientName: string) {
-    let serverMessages = this.clientService.mapChet.get(clientName)
+    console.log(`List of users : ${this.clientService.listOfUsers}`);
+    let serverMessages = this.clientService.mapChat.get(clientName)
     this.clientService.serverMessages = serverMessages;
-    this.clientService.sender = clientName
-  } 
-
+    this.clientService.clientName = clientName;
+    console.log(this.clientService)
+  }
 }
