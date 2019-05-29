@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       (next) => {
         // alert(JSON.stringify(next))
         this.clientService.token = JSON.stringify(next);
-        sessionStorage.setItem('token' , this.clientService.token)
+        sessionStorage.setItem('token', this.clientService.token)
         // console.log(this.clientService.token)
         // get the token from request ang nav to home page 
         this.clientService.sender = this.userName;

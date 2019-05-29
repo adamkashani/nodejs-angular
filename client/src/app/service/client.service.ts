@@ -19,13 +19,19 @@ export class ClientService {
 
   token: string;
 
+  isBroadcast: boolean = true;
+
   public sender = '';
 
   public socket$: WebSocketSubject<Message>;
 
   constructor(private httpClient: HttpClient) {
     this.token = sessionStorage.getItem('token')
-    //this.onLogin();
+    if (this.token) {
+      if (this.socket$) {
+        this.onLogin();
+      }
+    }
 
   }
 

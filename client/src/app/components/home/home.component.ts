@@ -13,12 +13,15 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
      this.clientService.onLogin();
+     this.clientService.listOfUsers
+     this.clientService.isBroadcast = false;
   }
 
-  //to chinge the chet text 
-  // chetClient(clientName: string) {
-  //   let serverMessages = this.clientService.mapChet.get(clientName)
-  //   this.clientService.serverMessages = serverMessages;
-  // }
+  // to change the chaet text 
+  changeChatClient(clientName: string) {
+    let serverMessages = this.clientService.mapChet.get(clientName)
+    this.clientService.serverMessages = serverMessages;
+    this.clientService.sender = clientName
+  } 
 
 }

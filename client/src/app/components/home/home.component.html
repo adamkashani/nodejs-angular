@@ -4,7 +4,13 @@
 
 
 <nav>
-  list off users 
+  list off users
+  <ul *ngFor="let user of clientService.listOfUsers ; let i = index">
+    <li>
+      <a (click)="changeChatClient(user)"><b>i.</b>{{user}}</a>
+    </li>
+  </ul>
+
 </nav>
 
 <app-chet class="overflow-auto"> </app-chet>

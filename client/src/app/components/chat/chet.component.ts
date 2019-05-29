@@ -34,10 +34,9 @@ export class ChetComponent implements AfterViewInit {
         this.isBroadcast = !this.isBroadcast;
     }
 
-    public send(name: string): void {
-        const message = new Message(this.clientMessage , this.isBroadcast , this.clientService.token , null)
+    public send(): void {
+        const message = new Message(this.clientMessage , this.isBroadcast , this.clientService.token ,  this.clientService.sender)
         this.serverMessages.push(message);
-        // this.serverMessages.push(message);
         this.clientService.socket$.next(message);
         this.clientMessage = '';
         this.scroll();

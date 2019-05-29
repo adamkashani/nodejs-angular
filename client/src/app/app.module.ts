@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/layout/app.component';
 import { LoginComponent } from './components/login/login.component';
-import { ChetComponent } from './components/chet/chet.component';
+import { ChetComponent } from './components/chat/chet.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CustomMaterialModule } from './material/material.module';
 import { HomeComponent } from './components/home/home.component';
